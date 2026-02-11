@@ -3,13 +3,6 @@
 *.log
 *.ctxt
 .mtj.tmp/
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
 hs_err_pid*
 replay_pid*
 
@@ -28,6 +21,7 @@ buildNumber.properties
 ### Gradle ###
 .gradle/
 build/
+# Keep Gradle wrapper jar despite global *.jar exclusion
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -43,9 +37,6 @@ HELP.md
 
 ### IntelliJ IDEA ###
 .idea/
-*.iws
-*.iml
-*.ipr
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
@@ -56,7 +47,6 @@ out/
 .factorypath
 .project
 .settings
-.springBeans
 .sts4-cache
 bin/
 !**/src/main/**/bin/
@@ -95,7 +85,6 @@ $RECYCLE.BIN/
 .nfs*
 
 ### Logs and temporary files ###
-*.log
 logs/
 temp/
 tmp/

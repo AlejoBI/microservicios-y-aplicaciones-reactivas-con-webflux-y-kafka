@@ -10,12 +10,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ProductosRepository extends ReactiveCrudRepository<Producto, Integer> {
-	Flux<Producto> findByCategoria(String categoria);
-	@Transactional
-	@Modifying
-	Mono<Void> deleteByNombre(String name);
-	@Transactional
-	@Modifying
-	@Query(value="delete from productos where precio>?")
-	Mono<Void> deletePrecio(double precioMax);
+    Flux<Producto> findByCategoria(String categoria);
+
+    @Transactional
+    @Modifying
+    Mono<Void> deleteByNombre(String name);
+
+    @Transactional
+    @Modifying
+    @Query(value = "delete from productos where precio>?")
+    Mono<Void> deletePrecio(double precioMax);
 }

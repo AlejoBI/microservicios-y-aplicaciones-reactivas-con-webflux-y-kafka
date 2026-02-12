@@ -19,8 +19,8 @@ import service.ProductosService;
 //@RestController
 @Configuration
 public class ProductosController {
-	@Autowired
-	ProductosService productosService;
+    @Autowired
+    ProductosService productosService;
 	/*@GetMapping(value="productos")
 	public ResponseEntity<Flux<Producto>> productos(){
 		return new ResponseEntity<>(productosService.catalogo(),HttpStatus.OK);
@@ -51,61 +51,64 @@ public class ProductosController {
 				.map(p->new ResponseEntity<>(p,HttpStatus.OK))//Mono<ResponseEntity<Producto>>
 				.switchIfEmpty(Mono.just(new ResponseEntity<>(HttpStatus.NOT_FOUND)));//Mono<ResponseEntity<Producto>>
 	}*/
-	
-	@Bean
-	public RouterFunction<ServerResponse> respuestas(){
-		return RouterFunctions.route(RequestPredicates.GET("productos"), 			
-				req->ServerResponse.ok() //BodyBuilder
-				.body(productosService.catalogo(), Producto.class)//Mono<ServerResponse
-				) //RouterFunction<ServerResponse>
-				.andRoute(RequestPredicates.GET("productos/{categoria}"), 
-					req->ServerResponse.ok()//BodyBuilder
-					.body(productosService.productosCategoria(req.pathVariable("categoria")), Producto.class)
-					)//RouterFunction<ServerResponse>
-					.andRoute(RequestPredicates.GET("producto"), 
-						req->ServerResponse.ok()//BodyBuilder
-						.body(productosService.productoCodigo(req.queryParam("cod").map(s->Integer.parseInt(s)).get()), Producto.class)
-						)//RouterFunction<ServerResponse>
-						.andRoute(RequestPredicates.POST("alta"), 
-							req->req.bodyToMono(Producto.class)//Mono<Producto>
-								.flatMap(p->{p.setNuevo(true);return productosService.altaProducto(p);})//Mono<Void>
-								.flatMap(v->ServerResponse.ok() //BodyBuilder
-										.build()//Mono<ServerResponse>
-										)//Mono<ServerResponse>
-								)//RouterFunction<ServerResponse>
-								.andRoute(RequestPredicates.DELETE("eliminar"), 
-									req->productosService.eliminarProducto(req.queryParam("cod").map(s->Integer.parseInt(s)).get())	//Mono<Producto>
-										.flatMap(p->ServerResponse.ok()//BodyBuilder
-													.bodyValue(p)//Mono<ServerResponse>
-												)//Mono<ServerResponse>
-										.switchIfEmpty(ServerResponse.status(HttpStatus.NOT_FOUND)//BodyBuilder
-												.build()//Mono<ServerResponse>
-												)//Mono<ServerResponse>
-										)//RouterFunction<ServerResponse>
-										.andRoute(RequestPredicates.PUT("actualizar"), 
-												req->productosService.actualizarPrecio(req.queryParam("cod").map(s->Integer.parseInt(s)).get(), 
-																					   req.queryParam("precio").map(s->Double.parseDouble(s)).get())//Mono<Producto>
-													.flatMap(p->ServerResponse.ok()//BodyBuilder
-															.bodyValue(p)//Mono<ServerResponse>
-															)//Mono<ServerResponse>
-													.switchIfEmpty(ServerResponse.status(HttpStatus.NOT_FOUND)//BodyBuilder
-															.build()//Mono<ServerResponse>
-															)//Mono<ServerResponse>
-												);
-	}
-	
-	@Bean
-	CorsWebFilter corsFilter() {
-		CorsConfiguration config = new CorsConfiguration();
-		config.addAllowedOrigin("*");
-		config.addAllowedHeader("*");
-		config.addAllowedMethod("*");
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", config);
-		return new CorsWebFilter(source);
-	}
-	
-	
+
+    @Bean
+    public RouterFunction<ServerResponse> respuestas() {
+        return RouterFunctions.route(RequestPredicates.GET("productos"),
+                        req -> ServerResponse.ok() //BodyBuilder
+                                .body(productosService.catalogo(), Producto.class)//Mono<ServerResponse
+                ) //RouterFunction<ServerResponse>
+                .andRoute(RequestPredicates.GET("productos/{categoria}"),
+                        req -> ServerResponse.ok()//BodyBuilder
+                                .body(productosService.productosCategoria(req.pathVariable("categoria")), Producto.class)
+                )//RouterFunction<ServerResponse>
+                .andRoute(RequestPredicates.GET("producto"),
+                        req -> ServerResponse.ok()//BodyBuilder
+                                .body(productosService.productoCodigo(req.queryParam("cod").map(s -> Integer.parseInt(s)).get()), Producto.class)
+                )//RouterFunction<ServerResponse>
+                .andRoute(RequestPredicates.POST("alta"),
+                        req -> req.bodyToMono(Producto.class)//Mono<Producto>
+                                .flatMap(p -> {
+                                    p.setNuevo(true);
+                                    return productosService.altaProducto(p);
+                                })//Mono<Void>
+                                .flatMap(v -> ServerResponse.ok() //BodyBuilder
+                                        .build()//Mono<ServerResponse>
+                                )//Mono<ServerResponse>
+                )//RouterFunction<ServerResponse>
+                .andRoute(RequestPredicates.DELETE("eliminar"),
+                        req -> productosService.eliminarProducto(req.queryParam("cod").map(s -> Integer.parseInt(s)).get())    //Mono<Producto>
+                                .flatMap(p -> ServerResponse.ok()//BodyBuilder
+                                        .bodyValue(p)//Mono<ServerResponse>
+                                )//Mono<ServerResponse>
+                                .switchIfEmpty(ServerResponse.status(HttpStatus.NOT_FOUND)//BodyBuilder
+                                        .build()//Mono<ServerResponse>
+                                )//Mono<ServerResponse>
+                )//RouterFunction<ServerResponse>
+                .andRoute(RequestPredicates.PUT("actualizar"),
+                        req -> productosService.actualizarPrecio(req.queryParam("cod").map(s -> Integer.parseInt(s)).get(),
+                                        req.queryParam("precio").map(s -> Double.parseDouble(s)).get())//Mono<Producto>
+                                .flatMap(p -> ServerResponse.ok()//BodyBuilder
+                                        .bodyValue(p)//Mono<ServerResponse>
+                                )//Mono<ServerResponse>
+                                .switchIfEmpty(ServerResponse.status(HttpStatus.NOT_FOUND)//BodyBuilder
+                                        .build()//Mono<ServerResponse>
+                                )//Mono<ServerResponse>
+                );
+    }
+
+    @Bean
+    CorsWebFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return new CorsWebFilter(source);
+    }
+
+
 }
 
 
